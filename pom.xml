@@ -29,6 +29,7 @@
         <munit-cats-effect.version>2.2.0</munit-cats-effect.version>
         <scalatest.version>3.2.19</scalatest.version>
         <munit.version>1.2.4</munit.version>
+        <cats-effect-testing.version>1.7.0</cats-effect-testing.version>
 
         <!-- Plugins -->
         <scala-maven-plugin.version>4.9.10</scala-maven-plugin.version>
@@ -118,6 +119,7 @@
             <version>${munit-cats-effect.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -169,7 +171,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>check</goal>
+                            <goal>apply</goal>
                         </goals>
                         <phase>verify</phase>
                     </execution>

@@ -1,35 +1,37 @@
 package com.myway.rockthejvm
 
-import cats.effect.{ExitCode, IO}
+import cats.Id
+import cats.effect.IO
+import cats.effect.kernel.Outcome
 import cats.effect.testing.scalatest.AsyncIOSpec
+import cats.effect.testkit.TestControl
+import munit.CatsEffectAssertions.MUnitCatsAssertionsForIOOps
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import cats.effect.IO
-import cats.effect.testing.scalatest.AsyncIOSpec
-import cats.effect.testkit.TestConsole
-import org.scalatest.funsuite.AsyncFunSuite
-import java.io.ByteArrayOutputStream
 
-class HelloWorldTest
-  extends AsyncFunSuite
-    with AsyncIOSpec {
+import scala.concurrent.duration.DurationInt
+
+class HelloWorldTest extends AsyncFunSuite with AsyncIOSpec {
   test("HelloWorld computes Hello, world!") {
 
     val program: IO[String] = HelloWorld.sayHello("world")
-    program.map(
-       msg => msg shouldBe "Hello, world!"
-    )
+    program.map(msg => msg shouldBe "Hello, world!")
   }
-  test("HelloWorld prints Hello, World!") {
 
-    TestConsole[IO].flatMap { console =>
+  test(" HelloWorld with test control") {
+    // arrange
+    val ioProgram: IO[String] = HelloWorld.sayHello("World")
 
-      given Console[IO] = console
+    // act
+    for {
+      control <- TestControl.execute(ioProgram)
+      _ <- control.tick
+      _ <- control.advanceAndTick(100.millis)
+      // assert
+      _ <- control.results.assertEquals(
+        Some(Outcome.succeeded[Id, Throwable, String]("Hello, World!"))
+      )
+    } yield ()
 
-      HelloWorld.program[IO] >>
-        console.readOutput.map { output =>
-          assert(output == List("Hello, World!"))
-        }
-    }
   }
 }

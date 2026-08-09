@@ -6,9 +6,8 @@ object HelloWorld extends IOApp {
   def run(args: List[String]): IO[ExitCode] =
     for {
       msg <- sayHello("World")
-      _ <-IO.println(msg)
+      _ <- IO.println(msg)
     } yield ExitCode.Success
 
-
-  def sayHello(s:String):IO[String]=IO(s"Hello, $s!")
+  def sayHello(s: String): IO[String] = IO(s"Hello, $s!")
 }
