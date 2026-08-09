@@ -17,7 +17,6 @@ class StreamTestControlTest extends AsyncFunSuite with AsyncIOSpec {
     val helloStream: Stream[IO, String] =
       Stream.constant("hello").covary[IO].metered(5.seconds).take(2)
 
-
     val streamWithTime: Stream[IO, (FiniteDuration, String)] =
       Stream.eval(IO.monotonic).flatMap { t0 =>
         helloStream.evalMap { value =>
@@ -39,7 +38,8 @@ class StreamTestControlTest extends AsyncFunSuite with AsyncIOSpec {
 
   test("can also be stepped manually with TestControl") {
     val stream: Stream[IO, Int] =
-      Stream.iterate(0)(_ + 1)
+      Stream
+        .iterate(0)(_ + 1)
         .covary[IO]
         .metered(1.second)
         .take(3)
@@ -49,9 +49,13 @@ class StreamTestControlTest extends AsyncFunSuite with AsyncIOSpec {
     TestControl.execute(program).flatMap { ctrl =>
       for {
         _ <- ctrl.tick // Kick off the stream
-        _ <- ctrl.results.asserting(_ shouldBe None) // Nothing has been emitted yet
-        _ <- ctrl.advance(1.second) // Advance 1 second → first element becomes available
-        _ <- ctrl.tick  // (results still None because we haven't finished the whole program)
+        _ <- ctrl.results
+          .asserting(_ shouldBe None) // Nothing has been emitted yet
+        _ <- ctrl.advance(
+          1.second
+        ) // Advance 1 second → first element becomes available
+        _ <-
+          ctrl.tick // (results still None because we haven't finished the whole program)
         _ <- ctrl.tickAll // Advance the remaining time and run to completion
         result <- ctrl.results
       } yield {
