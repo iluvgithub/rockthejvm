@@ -12,7 +12,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import scala.concurrent.duration.DurationInt
 
 class HelloWorldTest extends AsyncFunSuite with AsyncIOSpec {
-  
+
   test("HelloWorld computes Hello, world!") {
     val program: IO[String] = HelloWorld.sayHello("world")
     program.map(msg => msg shouldBe "Hello, world!")
