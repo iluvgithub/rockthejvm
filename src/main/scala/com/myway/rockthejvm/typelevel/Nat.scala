@@ -78,9 +78,9 @@ object + {
   val oneL: +[_0, _1] = +.apply
   val oneR: +[_1, _0] = +.apply
 
-  def apply[A <: Nat, B <: Nat, S <: Nat](implicit
+  def apply[A <: Nat, B <: Nat](implicit
       plus: +[A, B]
-  ): +[A, B] = plus
+  ): Plus[A, B, plus.Result] = plus
 
   implicit def inductive[A <: Nat, B <: Nat, S <: Nat](implicit
       plus: Plus[A, B, S]
@@ -91,4 +91,14 @@ object + {
   val fourL: +[_1, _3] = +.apply
   val fourR: +[_3, _1] = +.apply
 
+
+}
+
+object Main {
+
+  import +._
+  def main(args: Array[String]): Unit = {
+    import com.myway.rockthejvm.typelevel.TypeLevelProgramming._
+    println(show(+[_1, _3]))
+  }
 }

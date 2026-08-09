@@ -33,6 +33,7 @@ class NatTest extends AnyFunSuite with Matchers {
 
     val fourBis: +[_3, _1] = +.apply
     show(fourBis) shouldBe "TypeTag[_3 + _1]"
+
   }
 
 }
