@@ -1,5 +1,7 @@
 package com.myway.rockthejvm.typelevel
 
+import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4}
+
 trait HList
 
 class HNil extends HList
@@ -26,7 +28,69 @@ object Split {
   ): Split[N1 :: N2 :: T, N1 :: L, N2 :: R] =
     new Split[N1 :: N2 :: T, N1 :: L, N2 :: R] {}
 
-  def apply[HL <: HList, L <: HList, R <: HList](implicit split: Split[HL,L,R]): Split[HL, L, R] = split
+  def apply[HL <: HList, L <: HList, R <: HList](implicit
+      split: Split[HL, L, R]
+  ): Split[HL, L, R] = split
 
+}
 
+trait Merge[LA <: HList, LB <: HList, L <: HList]
+
+object Merge {
+  implicit def basicLeft[L <: HList]: Merge[HNil, L, L] =
+    new Merge[HNil, L, L] {}
+
+  implicit def basicRight[L <: HList]: Merge[L, HNil, L] =
+    new Merge[L, HNil, L] {}
+
+  implicit def indictiveLte[
+      N1 <: Nat,
+      T1 <: HList,
+      N2 <: Nat,
+      T2 <: HList,
+      IR <: HList
+  ](implicit
+      merge: Merge[T1, N2 :: T2, IR],
+      lte: N1 <= N2
+  ): Merge[N1 :: T1, N2 :: T2, N1 :: IR] =
+    new Merge[N1 :: T1, N2 :: T2, N1 :: IR] {}
+
+  implicit def indictiveGte[
+      N1 <: Nat,
+      T1 <: HList,
+      N2 <: Nat,
+      T2 <: HList,
+      IR <: HList
+  ](implicit
+      merge: Merge[N1 :: T1, T2, IR],
+      gt: N2 < N1
+  ): Merge[N1 :: T1, N2 :: T2, N2 :: IR] =
+    new Merge[N1 :: T1, N2 :: T2, N2 :: IR] {}
+
+  def apply[LA <: HList, LB <: HList, L <: HList](implicit
+      merge: Merge[LA, LB, L]
+  ): Merge[LA, LB, L] = merge
+
+  val validMerge: Merge[
+    _1 :: _3 :: HNil,
+    _2 :: _4 :: HNil,
+    _1 :: _2 :: _3 :: _4 :: HNil
+  ] =
+    Merge.apply
+}
+
+trait Sort[L <: HList, O <: HList]
+
+object Sort {
+
+  implicit val basicNil :Sort[HNil,HNil] = new Sort[HNil,HNil] {}
+  implicit def basicOne[N <: Nat] :Sort[N::HNil, N::HNil] = new Sort[N::HNil,N::HNil] {}
+  implicit def inductive[I <: HList, L<:HList, R <:HList, SL <: HList, SR <: HList, O <: HList]
+                        (implicit split: Split[I,L,R],
+                         sortLeft:Sort[L,SL],
+                         sortRight:Sort[R,SR],
+                         merge:Merge[SL,SR,O]
+                        ):Sort[I,O] = new Sort[I,O] {}
+
+  def apply[L <: HList,O <: HList](implicit sort:Sort[L,O]): Sort[L, O] =sort
 }
