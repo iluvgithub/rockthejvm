@@ -9,4 +9,12 @@ object TypeLevelProgramming {
       "com.myway.rockthejvm.typelevel.TypeLevelProgramming",
       ""
     )
+    .replace(
+      "com.myway.rockthejvm.typelevel.Nat",
+      ""
+    )
+    .replace(
+      "com.myway.rockthejvm.typelevel",
+      ""
+    )
 }
