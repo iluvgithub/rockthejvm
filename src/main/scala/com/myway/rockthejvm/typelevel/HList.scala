@@ -1,6 +1,6 @@
 package com.myway.rockthejvm.typelevel
 
-import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4, _5}
+import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4}
 
 trait HList
 
@@ -79,18 +79,22 @@ object Merge {
     Merge.apply
 }
 
-trait Sort[L <: HList] { type Result <: HList }
+trait Sort[L <: HList] {
+  type Result <: HList
+}
 
 object Sort {
 
-  type SortOp[L <: HList, R <: HList] = Sort[L] { type Result = R }
+  private type SortOp[L <: HList, R <: HList] = Sort[L] { type Result = R }
 
   implicit val basicNil: SortOp[HNil, HNil] = new Sort[HNil] {
     type Result = HNil
   }
-  implicit def basicOne[N <: Nat]: Sort[N :: HNil] = new Sort[N :: HNil] {
-    type Result = N :: HNil
-  }
+
+  implicit def basicOne[N <: Nat]: SortOp[N :: HNil, N :: HNil] =
+    new Sort[N :: HNil] {
+      type Result = N :: HNil
+    }
 
   implicit def inductive[
       I <: HList,
@@ -104,10 +108,10 @@ object Sort {
       sortLeft: SortOp[L, SL],
       sortRight: SortOp[R, SR],
       merge: Merge[SL, SR, O]
-  ): SortOp[I, O] = new Sort[I] { type Result = O }
+  ): SortOp[I, O] = new Sort[I] {
+    type Result = O
+  }
 
   def apply[L <: HList](implicit sort: Sort[L]): SortOp[L, sort.Result] = sort
-
-  val validSort: Sort[_1 :: HNil] = Sort[_1 :: HNil]
 
 }

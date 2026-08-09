@@ -1,9 +1,11 @@
 package com.myway.rockthejvm.typelevel
-import scala.language.existentials
-import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4, _5}
+
+import com.myway.rockthejvm.typelevel.Nat._
 import com.myway.rockthejvm.typelevel.TypeLevelProgramming.show
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+
+import scala.language.existentials
 
 class HListTest extends AnyFunSuite with Matchers {
 
@@ -30,23 +32,17 @@ class HListTest extends AnyFunSuite with Matchers {
   }
 
   test("sort") {
-    val validSort0 = Sort[_1 :: HNil]
 
-    // show(      validSort0    ) shouldBe ""
-
-    /*
-    val validSort  = Sort[ _4 :: _3 :: _1 :: _2 :: _5 :: HNil]
+    val validSort = Sort[_4 :: _3 :: _1 :: _2 :: _5 :: HNil]
 
     show(
       validSort
-    ) shouldBe ""
+    ) shouldBe "TypeTag[Sort[Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[_0]]] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: HNil]{type Result = Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[_0]]] :: Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: HNil}]"
 
-    val otherSort  = Sort[ _4 :: _3 :: _1 :: _2 :: _5 :: _1 :: HNil]
+    val otherSort = Sort[_4 :: _3 :: _1 :: _2 :: _5 :: _1 :: HNil]
     show(
       otherSort
-    ) shouldBe ""
+    ) shouldBe "TypeTag[Sort[Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[_0]]] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: Succ[_0] :: HNil]{type Result = Succ[_0] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[_0]]] :: Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: HNil}]"
 
-
-     */
   }
 }
