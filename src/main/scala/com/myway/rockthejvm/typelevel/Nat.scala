@@ -21,7 +21,7 @@ object Nat {
 trait <[A <: Nat, B <: Nat]
 
 object < {
-  implicit def ltBasic[B <: Nat]: <[_0, Succ[B]] = new<[_0, Succ[B]] {}
+  implicit def ltBasic[B <: Nat]: <[_0, Succ[B]] = new <[_0, Succ[B]] {}
 
   def apply[A <: Nat, B <: Nat](implicit lt: <[A, B]): A < B = lt
 
@@ -31,9 +31,9 @@ object < {
   val comparison04: _0 < _4 = <[_0, _4]
 
   implicit def inductive[A <: Nat, B <: Nat](implicit
-                                             lt: <[A, B]
-                                            ): Succ[A] < Succ[B] =
-    new<[Succ[A], Succ[B]] {}
+      lt: <[A, B]
+  ): Succ[A] < Succ[B] =
+    new <[Succ[A], Succ[B]] {}
 
   val comparison12: _1 < _2 = <[_1, _2]
   val comparison13: _1 < _3 = <[_1, _3]
@@ -45,16 +45,16 @@ trait <=[A <: Nat, B <: Nat]
 
 object <= {
 
-  implicit def leZero[B <: Nat]: <=[_0, _0] = new<=[_0, _0] {}
+  implicit def leZero[B <: Nat]: <=[_0, _0] = new <=[_0, _0] {}
 
-  implicit def leBasic[B <: Nat]: <=[_0, Succ[B]] = new<=[_0, Succ[B]] {}
+  implicit def leBasic[B <: Nat]: <=[_0, Succ[B]] = new <=[_0, Succ[B]] {}
 
   def apply[A <: Nat, B <: Nat](implicit le: <=[A, B]): A <= B = le
 
   implicit def inductive[A <: Nat, B <: Nat](implicit
-                                             le: <=[A, B]
-                                            ): Succ[A] <= Succ[B] =
-    new<=[Succ[A], Succ[B]] {}
+      le: <=[A, B]
+  ): Succ[A] <= Succ[B] =
+    new <=[Succ[A], Succ[B]] {}
 
   val comparison00: <=[_0, _0] = <=[_0, _0]
   val comparison13: <=[_1, _3] = <=[_1, _3]
@@ -67,19 +67,19 @@ trait +[A <: Nat, B <: Nat] {
 
 object + {
 
-  type Plus[A <: Nat, B <: Nat, S <: Nat] = +[A, B] {type Result = S}
+  type Plus[A <: Nat, B <: Nat, S <: Nat] = +[A, B] { type Result = S }
 
-  implicit val zero: Plus[_0, _0, _0] = new+[_0, _0] {
+  implicit val zero: Plus[_0, _0, _0] = new +[_0, _0] {
     type Result = _0
   }
 
   implicit def basicRight[A <: Nat](implicit lt: _0 < A): Plus[_0, A, A] =
-    new+[_0, A] {
+    new +[_0, A] {
       type Result = A
     }
 
   implicit def basicLeft[A <: Nat](implicit lt: _0 < A): Plus[A, _0, A] =
-    new+[A, _0] {
+    new +[A, _0] {
       type Result = A
     }
 
@@ -87,13 +87,12 @@ object + {
   val oneR: +[_1, _0] = +.apply
 
   def apply[A <: Nat, B <: Nat](implicit
-                                plus: +[A, B]
-                               ): Plus[A, B, plus.Result] = plus
+      plus: +[A, B]
+  ): Plus[A, B, plus.Result] = plus
 
-  implicit def inductive[A <: Nat, B <: Nat, S <: Nat](implicit
-                                                       plus: Plus[A, B, S]
-                                                      ): Plus[Succ[A], Succ[B], Succ[Succ[S]]] =
-    new+[Succ[A], Succ[B]] {
+  implicit def inductive[A <: Nat, B <: Nat, S <: Nat]
+      : Plus[Succ[A], Succ[B], Succ[Succ[S]]] =
+    new +[Succ[A], Succ[B]] {
       type Result = Succ[Succ[S]]
     }
 
@@ -102,13 +101,11 @@ object + {
   val fourL: +[_1, _3] = +.apply
   val fourR: +[_3, _1] = +.apply
 
-
 }
 
 object Main {
   def main(args: Array[String]): Unit = {
     import com.myway.rockthejvm.typelevel.TypeLevelProgramming._
-    println(show(+[_1, _3])
-    )
+    println(show(+[_1, _3]))
   }
 }
