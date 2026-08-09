@@ -1,7 +1,7 @@
 package com.myway.rockthejvm.typelevel
 
 import com.myway.rockthejvm.typelevel.Nat._
-
+// https://www.youtube.com/watch?v=qwUYqv6lKtQ&list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
 trait Nat
 class _0 extends Nat
 class Succ[N <: Nat] extends Nat
@@ -12,6 +12,7 @@ object Nat {
   type _2 = Succ[_1]
   type _3 = Succ[_2]
   type _4 = Succ[_3]
+  type _5 = Succ[_4]
 }
 
 trait <[A <: Nat, B <: Nat]
