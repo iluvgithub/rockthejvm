@@ -60,30 +60,35 @@ object <= {
   val comparison22: <=[_2, _2] = <=[_2, _2]
 }
 
-trait +[A <: Nat, B <: Nat, S <: Nat] // https://www.youtube.com/watch?v=EGAJJpGODHg&list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7&index=2
+trait +[A <: Nat, B <: Nat] {
+  type Result <: Nat
+} // https://www.youtube.com/watch?v=EGAJJpGODHg&list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7&index=2
 
 object + {
 
-  implicit val zero: +[_0, _0, _0] = new +[_0, _0, _0] {}
+  type Plus[A <: Nat, B <: Nat, S <: Nat] = +[A, B] { type Result = S }
 
-  implicit def basicRight[A <: Nat](implicit lt: _0 < A): +[_0, A, A] =
-    new +[_0, A, A] {}
-  implicit def basicLeft[A <: Nat](implicit lt: _0 < A): +[A, _0, A] =
-    new +[A, _0, A] {}
+  implicit val zero: Plus[_0, _0, _0] = new +[_0, _0] { type Result = _0 }
 
-  val oneL: +[_0, _1, _1] = +.apply
-  val oneR: +[_1, _0, _1] = +.apply
+  implicit def basicRight[A <: Nat](implicit lt: _0 < A): Plus[_0, A, A] =
+    new +[_0, A] { type Result = A }
+  implicit def basicLeft[A <: Nat](implicit lt: _0 < A): Plus[A, _0, A] =
+    new +[A, _0] { type Result = A }
+
+  val oneL: +[_0, _1] = +.apply
+  val oneR: +[_1, _0] = +.apply
 
   def apply[A <: Nat, B <: Nat, S <: Nat](implicit
-      plus: +[A, B, S]
-  ): +[A, B, S] = plus
+      plus: +[A, B]
+  ): +[A, B] = plus
 
   implicit def inductive[A <: Nat, B <: Nat, S <: Nat](implicit
-      plus: +[A, B, S]
-  ): +[Succ[A], Succ[B], Succ[Succ[S]]] =
-    new +[Succ[A], Succ[B], Succ[Succ[S]]] {}
+      plus: Plus[A, B, S]
+  ): Plus[Succ[A], Succ[B], Succ[Succ[S]]] =
+    new +[Succ[A], Succ[B]] { type Result = Succ[Succ[S]] }
 
   import com.myway.rockthejvm.typelevel.Nat.{_1, _3, _4}
-  val fourL: +[_1, _3, _4] = +[_1, _3, _4]
-  val fourR: +[_3, _1, _4] = +[_3, _1, _4]
+  val fourL: +[_1, _3] = +.apply
+  val fourR: +[_3, _1] = +.apply
+
 }

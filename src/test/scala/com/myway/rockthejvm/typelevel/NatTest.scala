@@ -28,8 +28,11 @@ class NatTest extends AnyFunSuite with Matchers {
 
   test("Peano +") {
 
-    val four: +[_1, _3, _4] = com.myway.rockthejvm.typelevel.+[_1, _3, _4]
-    show(four) shouldBe "TypeTag[+[_1,_3,_4]]"
+    val four: +[_1, _3] = +.apply
+    show(four) shouldBe "TypeTag[_1 + _3]"
+
+    val fourBis: +[_3, _1] = +.apply
+    show(fourBis) shouldBe "TypeTag[_3 + _1]"
   }
 
 }
