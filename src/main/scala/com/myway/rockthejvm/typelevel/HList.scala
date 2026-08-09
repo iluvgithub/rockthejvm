@@ -1,6 +1,6 @@
 package com.myway.rockthejvm.typelevel
 
-import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4}
+import com.myway.rockthejvm.typelevel.Nat.{_1, _2, _3, _4, _5}
 
 trait HList
 
@@ -79,18 +79,35 @@ object Merge {
     Merge.apply
 }
 
-trait Sort[L <: HList, O <: HList]
+trait Sort[L <: HList] { type Result <: HList }
 
 object Sort {
 
-  implicit val basicNil :Sort[HNil,HNil] = new Sort[HNil,HNil] {}
-  implicit def basicOne[N <: Nat] :Sort[N::HNil, N::HNil] = new Sort[N::HNil,N::HNil] {}
-  implicit def inductive[I <: HList, L<:HList, R <:HList, SL <: HList, SR <: HList, O <: HList]
-                        (implicit split: Split[I,L,R],
-                         sortLeft:Sort[L,SL],
-                         sortRight:Sort[R,SR],
-                         merge:Merge[SL,SR,O]
-                        ):Sort[I,O] = new Sort[I,O] {}
+  type SortOp[L <: HList, R <: HList] = Sort[L] { type Result = R }
 
-  def apply[L <: HList,O <: HList](implicit sort:Sort[L,O]): Sort[L, O] =sort
+  implicit val basicNil: SortOp[HNil, HNil] = new Sort[HNil] {
+    type Result = HNil
+  }
+  implicit def basicOne[N <: Nat]: Sort[N :: HNil] = new Sort[N :: HNil] {
+    type Result = N :: HNil
+  }
+
+  implicit def inductive[
+      I <: HList,
+      L <: HList,
+      R <: HList,
+      SL <: HList,
+      SR <: HList,
+      O <: HList
+  ](implicit
+      split: Split[I, L, R],
+      sortLeft: SortOp[L, SL],
+      sortRight: SortOp[R, SR],
+      merge: Merge[SL, SR, O]
+  ): SortOp[I, O] = new Sort[I] { type Result = O }
+
+  def apply[L <: HList](implicit sort: Sort[L]): SortOp[L, sort.Result] = sort
+
+  val validSort: Sort[_1 :: HNil] = Sort[_1 :: HNil]
+
 }
