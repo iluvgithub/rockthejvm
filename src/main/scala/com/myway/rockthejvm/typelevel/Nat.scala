@@ -84,5 +84,6 @@ object + {
     new +[Succ[A], Succ[B], Succ[Succ[S]]] {}
 
   import com.myway.rockthejvm.typelevel.Nat.{_1, _3, _4}
-  val four: +[_1, _3, _4] = +[_1, _3, _4]
+  val fourL: +[_1, _3, _4] = +[_1, _3, _4]
+  val fourR: +[_3, _1, _4] = +[_3, _1, _4]
 }
