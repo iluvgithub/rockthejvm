@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>scala-cats-project</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Scala 2.13 Cats Project</name>
+    <description>Maven project for Scala 2.13 with Cats, Cats Effect, FS2, Log4Cats, etc.</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala.version>2.13.18</scala.version>
+        <scala.binary.version>2.13</scala.binary.version>
+
+        <!-- Typelevel / core libraries -->
+        <cats.version>2.13.0</cats.version>
+        <cats-effect.version>3.7.0</cats-effect.version>
+        <fs2.version>3.13.0</fs2.version>
+        <log4cats.version>2.7.1</log4cats.version>
+        <reactive-streams.version>1.0.4</reactive-streams.version>
+
+        <!-- Testing -->
+        <cats-effect-testing.version>1.8.0</cats-effect-testing.version>
+        <munit-cats-effect.version>2.2.0</munit-cats-effect.version>
+        <scalatest.version>3.2.19</scalatest.version>
+        <munit.version>1.2.4</munit.version>
+
+        <!-- Plugins -->
+        <scala-maven-plugin.version>4.9.10</scala-maven-plugin.version>
+        <spotless.version>3.8.0</spotless.version>
+        <maven.compiler.release>17</maven.compiler.release>
+    </properties>
+
+    <dependencies>
+        <!-- Scala standard library + reflect -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+        <!-- Cats -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-core_${scala.binary.version}</artifactId>
+            <version>${cats.version}</version>
+        </dependency>
+
+        <!-- Cats Effect -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect_${scala.binary.version}</artifactId>
+            <version>${cats-effect.version}</version>
+        </dependency>
+
+        <!-- FS2 -->
+        <dependency>
+            <groupId>co.fs2</groupId>
+            <artifactId>fs2-core_${scala.binary.version}</artifactId>
+            <version>${fs2.version}</version>
+        </dependency>
+
+        <!-- Log4Cats -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>log4cats-core_${scala.binary.version}</artifactId>
+            <version>${log4cats.version}</version>
+        </dependency>
+
+        <!-- Reactive Streams -->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>${reactive-streams.version}</version>
+        </dependency>
+
+        <!-- ===== Test dependencies ===== -->
+
+        <!-- ScalaTest + Cats Effect testing -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.binary.version}</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect-testing-scalatest_${scala.binary.version}</artifactId>
+            <version>${cats-effect-testing.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-effect-testkit_2.13</artifactId>
+            <version>${cats-effect.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- MUnit + Cats Effect -->
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_${scala.binary.version}</artifactId>
+            <version>${munit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>munit-cats-effect_${scala.binary.version}</artifactId>
+            <version>${munit-cats-effect.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+
+        <plugins>
+            <!-- Scala Maven Plugin -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                    <args>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-unchecked</arg>
+                        <arg>-Xlint</arg>
+                    </args>
+                </configuration>
+            </plugin>
+
+            <!-- Spotless Maven Plugin -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <scala>
+                        <includes>
+                            <include>src/main/scala/**/*.scala</include>
+                            <include>src/test/scala/**/*.scala</include>
+                        </includes>
+                        <!-- Use scalafmt (recommended for Scala) -->
+                        <scalafmt>
+                            <version>3.8.3</version> <!-- or latest compatible -->
+                        </scalafmt>
+                    </scala>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Surefire for running tests (works with both ScalaTest and MUnit) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Spec.scala</include>
+                        <include>**/*Suite.scala</include>
+                        <include>**/*Test.scala</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
