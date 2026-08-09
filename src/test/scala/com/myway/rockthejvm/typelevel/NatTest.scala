@@ -12,15 +12,24 @@ class NatTest extends AnyFunSuite with Matchers {
     import com.myway.rockthejvm.typelevel.<._
     val comparison13: <[_2, _3] = com.myway.rockthejvm.typelevel.<[_2, _3]
     // val comparison23: <[_3, _2] = com.myway.rockthejvm.typelevel.<[_3, _2]
-    show(comparison13) shouldBe "TypeTag[._2 < ._3]"
+    show(comparison13) shouldBe "TypeTag[_2 < _3]"
   }
 
   test("Peano <= ") {
     import com.myway.rockthejvm.typelevel.<=._
     val comparison24: <=[_2, _4] = com.myway.rockthejvm.typelevel.<=[_2, _4]
-    show(comparison24) shouldBe "TypeTag[._2 <= ._4]"
+    show(comparison24) shouldBe "TypeTag[_2 <= _4]"
 
     val comparison00: <=[_0, _0] = com.myway.rockthejvm.typelevel.<=[_0, _0]
     val comparison11: <=[_1, _1] = com.myway.rockthejvm.typelevel.<=[_1, _1]
+    show(comparison00) shouldBe "TypeTag[_0 <= _0]"
+    show(comparison11) shouldBe "TypeTag[_1 <= _1]"
   }
+
+  test("Peano +") {
+
+    val four: +[_1, _3, _4] = com.myway.rockthejvm.typelevel.+[_1, _3, _4]
+    show(four) shouldBe "TypeTag[+[_1,_3,_4]]"
+  }
+
 }

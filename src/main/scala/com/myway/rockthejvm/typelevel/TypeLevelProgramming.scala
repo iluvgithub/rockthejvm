@@ -6,15 +6,15 @@ object TypeLevelProgramming {
   def show[T](v: T)(implicit tag: TypeTag[T]) = tag
     .toString()
     .replace(
-      "com.myway.rockthejvm.typelevel.TypeLevelProgramming",
+      "com.myway.rockthejvm.typelevel.TypeLevelProgramming.",
       ""
     )
     .replace(
-      "com.myway.rockthejvm.typelevel.Nat",
+      "com.myway.rockthejvm.typelevel.Nat.",
       ""
     )
     .replace(
-      "com.myway.rockthejvm.typelevel",
+      "com.myway.rockthejvm.typelevel.",
       ""
     )
 }
