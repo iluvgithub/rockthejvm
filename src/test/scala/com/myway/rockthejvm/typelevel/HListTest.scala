@@ -36,5 +36,12 @@ class HListTest extends AnyFunSuite with Matchers {
     show(
       validSort
     ) shouldBe "TypeTag[Sort[_4 :: _3 :: _1 :: _2 :: _5 :: HNil,_1 :: _2 :: _3 :: _4 :: _5 :: HNil]]"
+ 
+    val otherSort  = Sort[ _4 :: _3 :: _1 :: _2 :: _5 :: _1 :: HNil,
+      _1 :: _1 :: _2 :: _3 :: _4 :: _5 :: HNil]
+    show(
+      otherSort
+    ) shouldBe "TypeTag[Sort[_4 :: _3 :: _1 :: _2 :: _5 :: _1 :: HNil,_1 :: _1 :: _2 :: _3 :: _4 :: _5 :: HNil]]"
+
   }
 }
