@@ -18,13 +18,16 @@ class HListTest extends AnyFunSuite with Matchers {
   }
 
   test("merge") {
-    val validMerge :Merge[_1:: _3::HNil, _2:: _4 ::HNil , _1 ::_2::_3::_4::HNil] =
+    val validMerge: Merge[
+      _1 :: _3 :: HNil,
+      _2 :: _4 :: HNil,
+      _1 :: _2 :: _3 :: _4 :: HNil
+    ] =
       Merge.apply
 
     show(
       validMerge
-    ) shouldBe ""
+    ) shouldBe "TypeTag[Merge[_1 :: _3 :: HNil,_2 :: _4 :: HNil,_1 :: _2 :: _3 :: _4 :: HNil]]"
   }
-
 
 }
