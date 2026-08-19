@@ -22,4 +22,10 @@ class TreeTest extends AnyFunSuite with Matchers {
     o.map(_.trace) shouldBe Some("[a.[[b.c].d]]")
   }
 
+  test("label ") {
+    val l = List(1, 2, 3, 4, 5)
+    Tree.labelize(tr)(l).trace shouldBe "[(a,1).[[(b,2).(c,3)].(d,4)]]"
+
+  }
+
 }
