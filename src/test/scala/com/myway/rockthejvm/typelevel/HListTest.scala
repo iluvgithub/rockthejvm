@@ -5,8 +5,6 @@ import com.myway.rockthejvm.typelevel.TypeLevelProgramming.show
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-import scala.language.existentials
-
 class HListTest extends AnyFunSuite with Matchers {
 
   test("valid split") {
