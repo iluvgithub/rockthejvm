@@ -12,4 +12,8 @@ class TreeTest extends AnyFunSuite with Matchers {
     tr.trace shouldBe "[a.[[b.c].d]]"
   }
 
+  test("map trace ") {
+    tr.map(_.toUpper).trace shouldBe "[A.[[B.C].D]]"
+  }
+
 }

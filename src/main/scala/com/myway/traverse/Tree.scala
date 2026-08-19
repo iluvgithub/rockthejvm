@@ -9,10 +9,13 @@ case class Tree[A](e: Either[(Tree[A], Tree[A]), A]) {
 
   def trace: String = fold[String](_.toString, s1 => s2 => s"[$s1.$s2]")
 
+  def map[B](f: A => B): Tree[B] =
+    fold[Tree[B]](f andThen Tree.tip, Tree.curryBin)
 }
 
 object Tree {
 
   def tip[A](a: A) = Tree(Right(a))
   def bin[A](l: Tree[A], r: Tree[A]) = Tree(Left((l, r)))
+  def curryBin[A](l: Tree[A])(r: Tree[A]): Tree[A] = bin(l, r)
 }

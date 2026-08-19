@@ -12,3 +12,17 @@ trait Traverse[T[_]] {
     traverse(t)(identity)
 
 }
+
+object Traverse {
+
+  implicit def treeApp: Applicative[Tree] = new Applicative[Tree] {
+    override def pure[A](a: A): Tree[A] = Tree.tip(a)
+
+    override def ap[A, B](ff: Tree[A => B])(fa: Tree[A]): Tree[B] =
+      fa.fold[Tree[B]](
+        ???,
+        ???
+      )
+  }
+
+}
