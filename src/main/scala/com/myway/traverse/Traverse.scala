@@ -15,14 +15,24 @@ trait Traverse[T[_]] {
 
 object Traverse {
 
-  implicit def treeApp: Applicative[Tree] = new Applicative[Tree] {
-    override def pure[A](a: A): Tree[A] = Tree.tip(a)
-
-    override def ap[A, B](ff: Tree[A => B])(fa: Tree[A]): Tree[B] =
-      fa.fold[Tree[B]](
-        ???,
-        ???
+  implicit def treeApp: Traverse[Tree] = new Traverse[Tree] {
+    override def traverse[M[_], A, B](
+        t: Tree[A]
+    )(g: A => M[B])(implicit AP: Applicative[M]): M[Tree[B]] = {
+      t.fold[M[Tree[B]]](
+        x => AP.ap(AP.pure(x => Tree.tip[B](x)))(g(x)),
+        l =>
+          r =>
+            AP.ap(
+              AP.ap(
+                AP.pure[Tree[B] => Tree[B] => Tree[B]](l =>
+                  r => Tree.curryBin[B](l)(r)
+                )
+              )(l)
+            )(r)
       )
+
+    }
   }
 
 }

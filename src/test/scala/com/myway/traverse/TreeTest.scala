@@ -16,4 +16,10 @@ class TreeTest extends AnyFunSuite with Matchers {
     tr.map(_.toUpper).trace shouldBe "[A.[[B.C].D]]"
   }
 
+  test("traverse") {
+    val o: Option[Tree[Char]] =
+      Traverse.treeApp.traverse[Option, Char, Char](tr)(Some(_))
+    o.map(_.trace) shouldBe Some("[a.[[b.c].d]]")
+  }
+
 }
