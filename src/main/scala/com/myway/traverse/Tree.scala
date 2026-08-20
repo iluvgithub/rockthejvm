@@ -35,4 +35,15 @@ object Tree {
 
   def labelize[A, B](t: Tree[A]): List[B] => Tree[(A, B)] = bs =>
     label(t).runA(bs).value
+
+  def strip[A, B](a: A, b: B): State[List[B], A] = for {
+    bs <- State.get
+    _ <- State.set(b :: bs)
+  } yield a
+
+  def unlabel[A, B]: Tree[(A, B)] => State[List[B], Tree[A]] =
+    Traverse.treverse[Tree, ({ type l[X] = State[List[B], X] })#l, (A, B), A](
+      x => strip(x._1, x._2)
+    )
+
 }

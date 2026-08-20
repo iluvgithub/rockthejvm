@@ -1,5 +1,6 @@
 package com.myway.traverse
 
+import cats.data.State
 import com.myway.traverse.Tree.{bin, tip}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -25,7 +26,20 @@ class TreeTest extends AnyFunSuite with Matchers {
   test("label ") {
     val l = List(1, 2, 3, 4, 5)
     Tree.labelize(tr)(l).trace shouldBe "[(a,1).[[(b,2).(c,3)].(d,4)]]"
+  }
 
+  test("unlabel ") {
+    val l = List(1, 2, 3, 4, 5)
+
+    val st: State[List[Int], Tree[(Char, Int)]] = Tree.label[Char, Int](tr)
+
+    val state: State[List[Int], Tree[Char]] = for {
+      tr2 <- st
+      t <- Tree.unlabel[Char, Int](tr2)
+    } yield t
+
+    val ti: Tree[Char] = state.runA(List(5, 6, 7, 8)).value
+    ti.trace shouldBe "[a.[[b.c].d]]"
   }
 
 }

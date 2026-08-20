@@ -15,6 +15,14 @@ trait Traverse[T[_]] {
 
 object Traverse {
 
+  def treverse[F[_], M[_], A, B](f: A => M[B])(
+      fa: F[A]
+  )(implicit
+      F: Traverse[F],
+      M: cats.Applicative[M]
+  ): M[F[B]] =
+    F.traverse(fa)(a => Backwards(f(a))).forwards
+
   implicit def treeApp: Traverse[Tree] = new Traverse[Tree] {
     override def traverse[M[_], A, B](
         t: Tree[A]
