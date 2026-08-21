@@ -1,7 +1,7 @@
 package com.myway.traverse
 
 import cats.data.State
-import com.myway.traverse.Tree.{bin, tip}
+import com.myway.traverse.Tree.{Log, bin, captureInWriter, captureNiWriter, tip}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -40,6 +40,15 @@ class TreeTest extends AnyFunSuite with Matchers {
 
     val ti: Tree[Char] = state.runA(List(5, 6, 7, 8)).value
     ti.trace shouldBe "[a.[[b.c].d]]"
+  }
+
+  test("writer fwd / bacj") {
+    val fwd: Vector[Char] = captureInWriter(tr)
+    val bak = captureNiWriter(tr)
+
+    fwd.toList shouldBe List('d', 'c', 'b', 'a')
+    bak.toList shouldBe List('a', 'b', 'c', 'd')
+
   }
 
 }

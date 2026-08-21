@@ -1,6 +1,7 @@
 package com.myway.traverse
 
 import cats.Applicative
+import fs2.Compiler.Target.{forConcurrent, forSync}
 
 trait Traverse[T[_]] {
 
@@ -20,8 +21,12 @@ object Traverse {
   )(implicit
       F: Traverse[F],
       M: cats.Applicative[M]
-  ): M[F[B]] =
-    F.traverse(fa)(a => Backwards(f(a))).forwards
+  ): M[F[B]] = {
+      val q: A => Backwards[M, B] = (x:A) =>  Backwards[M,B](f(x))
+      type G[X] = Backwards[M,X]
+      val z: G[F[B]] = F.traverse[G,A,B](fa)(q)
+      z.forwards
+  }
 
   implicit def treeApp: Traverse[Tree] = new Traverse[Tree] {
     override def traverse[M[_], A, B](

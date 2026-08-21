@@ -7,7 +7,6 @@ final case class Backwards[F[_], A](forwards: F[A])
 
 object Backwards {
 
-
   implicit def applicativeInstance[F[_]](implicit
       F: Applicative[F]
   ): Applicative[({ type L[A] = Backwards[F, A] })#L] =

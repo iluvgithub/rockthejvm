@@ -1,12 +1,12 @@
 package com.myway.traverse
 
 import cats.Applicative
-import cats.data.State
+import cats.data.{State, Writer}
 
 case class Tree[A](e: Either[(Tree[A], Tree[A]), A]) {
 
   def fold[B](f: A => B, op: B => B => B): B = e match {
-    case Right(a)     => f(a)
+    case Right(a) => f(a)
     case Left((l, r)) => op(l.fold(f, op))(r.fold(f, op))
   }
 
@@ -22,7 +22,9 @@ case class Tree[A](e: Either[(Tree[A], Tree[A]), A]) {
 object Tree {
 
   def tip[A](a: A) = Tree(Right(a))
+
   def bin[A](l: Tree[A], r: Tree[A]) = Tree(Left((l, r)))
+
   def curryBin[A](l: Tree[A])(r: Tree[A]): Tree[A] = bin(l, r)
 
   def label[A, B](t: Tree[A]): State[List[B], Tree[(A, B)]] =
@@ -42,8 +44,27 @@ object Tree {
   } yield a
 
   def unlabel[A, B]: Tree[(A, B)] => State[List[B], Tree[A]] =
-    Traverse.treverse[Tree, ({ type l[X] = State[List[B], X] })#l, (A, B), A](
+    Traverse.treverse[Tree, ({type l[X] = State[List[B], X]})#l, (A, B), A](
       x => strip(x._1, x._2)
     )
+
+  type Log[A, X] = Writer[Vector[A], X]
+
+  implicit def applLog[U]: Applicative[({type L[Z] = Log[U, Z]})#L] = new Applicative[({type L[Z] = Log[U, Z]})#L] {
+
+    override def pure[A](x: A): Log[U, A] = Writer(Vector(), x)
+
+    override def ap[A, B](ff: Log[U, A => B])(fa: Log[U, A]): Log[U, B] = for {
+      a <- fa
+      f <- ff
+    } yield f(a)
+  }
+
+  def visit[A](a: A): Log[A, A] = Writer(Vector(a), a)
+
+  def captureInWriter[A](tr: Tree[A]): Vector[A] = tr.traverse(visit).written
+
+
+  def captureNiWriter[A](tr: Tree[A]): Vector[A] = Traverse.treverse[Tree,({type L[Z] = Log[A, Z]})#L , A,A](visit)(tr).written
 
 }
