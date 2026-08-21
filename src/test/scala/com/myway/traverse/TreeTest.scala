@@ -25,7 +25,7 @@ class TreeTest extends AnyFunSuite with Matchers {
 
   test("label ") {
     val l = List(1, 2, 3, 4, 5)
-    Tree.labelize(tr)(l).trace shouldBe "[(a,1).[[(b,2).(c,3)].(d,4)]]"
+    Tree.labelling(tr)(l).trace shouldBe "[(a,1).[[(b,2).(c,3)].(d,4)]]"
   }
 
   test("unlabel ") {

@@ -34,15 +34,15 @@ object Tree {
   def label[A, B](t: Tree[A]): State[List[B], Tree[(A, B)]] =
     t.traverse(adorn[A, B])
 
-  def adorn[A, B](a: A): State[List[B], (A, B)] = for {
+  private def adorn[A, B](a: A): State[List[B], (A, B)] = for {
     bs <- State.get
     _ <- State.set(bs.tail)
   } yield (a, bs.head)
 
-  def labelize[A, B](t: Tree[A]): List[B] => Tree[(A, B)] = bs =>
+  def labelling[A, B](t: Tree[A]): List[B] => Tree[(A, B)] = bs =>
     label(t).runA(bs).value
 
-  def strip[A, B](a: A, b: B): State[List[B], A] = for {
+  private def strip[A, B](a: A, b: B): State[List[B], A] = for {
     bs <- State.get
     _ <- State.set(b :: bs)
   } yield a
