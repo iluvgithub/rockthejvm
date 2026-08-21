@@ -48,11 +48,11 @@ object Tree {
       x => strip(x._1, x._2)
     )
 
-  type Log[A, X] = Writer[Vector[A], X]
+  type Log[A, X] = Writer[List[A], X]
 
   implicit def applLog[U]: Applicative[({type L[Z] = Log[U, Z]})#L] = new Applicative[({type L[Z] = Log[U, Z]})#L] {
 
-    override def pure[A](x: A): Log[U, A] = Writer(Vector(), x)
+    override def pure[A](x: A): Log[U, A] = Writer(List(), x)
 
     override def ap[A, B](ff: Log[U, A => B])(fa: Log[U, A]): Log[U, B] = for {
       a <- fa
@@ -60,11 +60,9 @@ object Tree {
     } yield f(a)
   }
 
-  def visit[A](a: A): Log[A, A] = Writer(Vector(a), a)
+  def visit[A](a: A): Log[A, A] = Writer(List(a), a)
 
-  def captureInWriter[A](tr: Tree[A]): Vector[A] = tr.traverse(visit).written
-
-
-  def captureNiWriter[A](tr: Tree[A]): Vector[A] = Traverse.treverse[Tree,({type L[Z] = Log[A, Z]})#L , A,A](visit)(tr).written
+  def captureInWriterBck[A](tr: Tree[A]): List[A] = tr.traverse(visit).written
+  def captureInWriterFwd[A](tr: Tree[A]): List[A] = Traverse.treverse[Tree,({type L[Z] = Log[A, Z]})#L , A,A](visit)(tr).written
 
 }
