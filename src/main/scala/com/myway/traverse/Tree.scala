@@ -52,7 +52,7 @@ object Tree {
       strip(x._1, x._2)
     )
 
-  type Log[A, X] = Writer[List[A], X]
+  private type Log[A, X] = Writer[List[A], X]
 
   implicit def applLog[U]: Applicative[({ type L[Z] = Log[U, Z] })#L] =
     new Applicative[({ type L[Z] = Log[U, Z] })#L] {
