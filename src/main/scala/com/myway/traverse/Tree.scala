@@ -48,9 +48,7 @@ object Tree {
   } yield a
 
   def unlabel[A, B]: Tree[(A, B)] => State[List[B], Tree[A]] =
-    _.traverseBack[({ type l[X] = State[List[B], X] })#l, A](x =>
-      strip(x._1, x._2)
-    )
+    _.traverseBack(x => strip(x._1, x._2))
 
   private type Log[A, X] = Writer[List[A], X]
 
