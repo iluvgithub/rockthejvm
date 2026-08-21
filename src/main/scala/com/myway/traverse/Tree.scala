@@ -54,7 +54,7 @@ object Tree {
 
   private type Log[A, X] = Writer[List[A], X]
 
-  implicit def applLog[U]: Applicative[({ type L[Z] = Log[U, Z] })#L] =
+  implicit def applicativeLog[U]: Applicative[({ type L[Z] = Log[U, Z] })#L] =
     new Applicative[({ type L[Z] = Log[U, Z] })#L] {
 
       override def pure[A](x: A): Log[U, A] = Writer(List(), x)
@@ -66,10 +66,9 @@ object Tree {
         } yield f(a)
     }
 
-  def visit[A](a: A): Log[A, A] = Writer(List(a), a)
+  private def visit[A](a: A): Log[A, A] = Writer(List(a), a)
 
   def writeBck[A](tr: Tree[A]): List[A] = tr.traverse(visit).written
-  def writeFwd[A](tr: Tree[A]): List[A] =
-    tr.traverseBack(visit).written
+  def writeFwd[A](tr: Tree[A]): List[A] = tr.traverseBack(visit).written
 
 }
