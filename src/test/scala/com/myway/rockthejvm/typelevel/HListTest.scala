@@ -42,5 +42,11 @@ class HListTest extends AnyFunSuite with Matchers {
       otherSort
     ) shouldBe "TypeTag[Sort[Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[_0]]] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: Succ[_0] :: HNil]{type Result = Succ[_0] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[_0]]] :: Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: HNil}]"
 
+    val validSort2 = Sort[_5 :: _4 :: _3 :: _1 :: _2 :: HNil]
+
+    show(
+      validSort2
+    ) shouldBe "TypeTag[Sort[Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[_0]]] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: Succ[_0] :: HNil]{type Result = Succ[_0] :: Succ[_0] :: Succ[Succ[_0]] :: Succ[Succ[Succ[_0]]] :: Succ[Succ[Succ[Succ[_0]]]] :: Succ[Succ[Succ[Succ[Succ[_0]]]]] :: HNil}]"
+
   }
 }
