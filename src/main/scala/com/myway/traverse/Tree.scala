@@ -6,7 +6,7 @@ import cats.data.{State, Writer}
 case class Tree[A](e: Either[(Tree[A], Tree[A]), A]) {
 
   def fold[B](f: A => B, op: B => B => B): B = e match {
-    case Right(a) => f(a)
+    case Right(a)     => f(a)
     case Left((l, r)) => op(l.fold(f, op))(r.fold(f, op))
   }
 
@@ -15,8 +15,12 @@ case class Tree[A](e: Either[(Tree[A], Tree[A]), A]) {
   def map[B](f: A => B): Tree[B] =
     fold[Tree[B]](f andThen Tree.tip, Tree.curryBin)
 
-  def traverse[M[_], B](g: A => M[B])(implicit AP: Applicative[M]) =
+  def traverse[M[_], B](g: A => M[B])(implicit AP: Applicative[M]): M[Tree[B]] =
     Traverse.treeApp.traverse(this)(g)
+  def traverseBack[M[_], B](g: A => M[B])(implicit
+      AP: Applicative[M]
+  ): M[Tree[B]] =
+    Traverse.treeApp.traverseBack(this)(g)
 }
 
 object Tree {
@@ -44,25 +48,28 @@ object Tree {
   } yield a
 
   def unlabel[A, B]: Tree[(A, B)] => State[List[B], Tree[A]] =
-    Traverse.treverse[Tree, ({type l[X] = State[List[B], X]})#l, (A, B), A](
-      x => strip(x._1, x._2)
+    _.traverseBack[({ type l[X] = State[List[B], X] })#l, A](x =>
+      strip(x._1, x._2)
     )
 
   type Log[A, X] = Writer[List[A], X]
 
-  implicit def applLog[U]: Applicative[({type L[Z] = Log[U, Z]})#L] = new Applicative[({type L[Z] = Log[U, Z]})#L] {
+  implicit def applLog[U]: Applicative[({ type L[Z] = Log[U, Z] })#L] =
+    new Applicative[({ type L[Z] = Log[U, Z] })#L] {
 
-    override def pure[A](x: A): Log[U, A] = Writer(List(), x)
+      override def pure[A](x: A): Log[U, A] = Writer(List(), x)
 
-    override def ap[A, B](ff: Log[U, A => B])(fa: Log[U, A]): Log[U, B] = for {
-      a <- fa
-      f <- ff
-    } yield f(a)
-  }
+      override def ap[A, B](ff: Log[U, A => B])(fa: Log[U, A]): Log[U, B] =
+        for {
+          a <- fa
+          f <- ff
+        } yield f(a)
+    }
 
   def visit[A](a: A): Log[A, A] = Writer(List(a), a)
 
   def captureInWriterBck[A](tr: Tree[A]): List[A] = tr.traverse(visit).written
-  def captureInWriterFwd[A](tr: Tree[A]): List[A] = Traverse.treverse[Tree,({type L[Z] = Log[A, Z]})#L , A,A](visit)(tr).written
+  def captureInWriterFwd[A](tr: Tree[A]): List[A] =
+    tr.traverseBack(visit).written
 
 }

@@ -1,7 +1,12 @@
 package com.myway.traverse
 
 import cats.data.State
-import com.myway.traverse.Tree.{bin, captureInWriterBck, captureInWriterFwd, tip}
+import com.myway.traverse.Tree.{
+  bin,
+  captureInWriterBck,
+  captureInWriterFwd,
+  tip
+}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -12,7 +17,6 @@ class TreeTest extends AnyFunSuite with Matchers {
   test("fold ") {
     tr.trace shouldBe "[a.[[b.c].d]]"
   }
-
 
   test("map trace ") {
     tr.map(_.toUpper).trace shouldBe "[A.[[B.C].D]]"
@@ -30,8 +34,6 @@ class TreeTest extends AnyFunSuite with Matchers {
   }
 
   test("unlabel ") {
-    val l = List(1, 2, 3, 4, 5)
-
     val st: State[List[Int], Tree[(Char, Int)]] = Tree.label[Char, Int](tr)
 
     val state: State[List[Int], Tree[Char]] = for {
@@ -50,6 +52,5 @@ class TreeTest extends AnyFunSuite with Matchers {
     fwd shouldBe List('d', 'c', 'b', 'a')
     bak shouldBe List('a', 'b', 'c', 'd')
   }
-
 
 }

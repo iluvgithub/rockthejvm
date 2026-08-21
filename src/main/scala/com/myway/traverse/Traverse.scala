@@ -1,32 +1,53 @@
 package com.myway.traverse
 
 import cats.Applicative
-import fs2.Compiler.Target.{forConcurrent, forSync}
 
 trait Traverse[T[_]] {
 
-  def traverse[M[_], A, B](t: T[A])(g: A => M[B])(implicit
+  def traverse[M[_], A, B](
+      t: T[A]
+  )(
+      g: A => M[B]
+  )(implicit
       AP: Applicative[M]
   ): M[T[B]]
 
-  def sequence[M[_], A](t: T[M[A]])(implicit AP: Applicative[M]): M[T[A]] =
+  def sequence[M[_], A](
+      t: T[M[A]]
+  )(implicit
+      AP: Applicative[M]
+  ): M[T[A]] =
     traverse(t)(identity)
 
+  def traverseBack[M[_], A, B](
+      t: T[A]
+  )(
+      g: A => M[B]
+  )(implicit
+      AP: Applicative[M]
+  ): M[T[B]] = {
+
+    type G[X] = Backwards[M, X]
+
+    val q: A => G[B] =
+      x => Backwards[M, B](g(x))
+
+    val z: G[T[B]] =
+      traverse[G, A, B](t)(q)
+
+    z.forwards
+  }
 }
-
 object Traverse {
-
-  def treverse[F[_], M[_], A, B](f: A => M[B])(
+  def backTraverse[F[_], M[_], A, B](
+      f: A => M[B]
+  )(
       fa: F[A]
   )(implicit
       F: Traverse[F],
-      M: cats.Applicative[M]
-  ): M[F[B]] = {
-      val q: A => Backwards[M, B] = (x:A) =>  Backwards[M,B](f(x))
-      type G[X] = Backwards[M,X]
-      val z: G[F[B]] = F.traverse[G,A,B](fa)(q)
-      z.forwards
-  }
+      M: Applicative[M]
+  ): M[F[B]] =
+    F.traverseBack(fa)(f)
 
   implicit def treeApp: Traverse[Tree] = new Traverse[Tree] {
     override def traverse[M[_], A, B](
