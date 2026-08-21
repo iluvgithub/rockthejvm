@@ -50,6 +50,9 @@ object Tree {
   def unlabel[A, B]: Tree[(A, B)] => State[List[B], Tree[A]] =
     _.traverseBack(x => strip(x._1, x._2))
 
+  def unlabelize[A, B]: Tree[(A, B)] => List[B] = tr =>
+    Tree.unlabel(tr).run(Nil).value._1
+
   private type Log[A, X] = Writer[List[A], X]
 
   implicit def applicativeLog[U]: Applicative[({ type L[Z] = Log[U, Z] })#L] =

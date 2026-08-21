@@ -1,7 +1,7 @@
 package com.myway.traverse
 
 import cats.data.State
-import com.myway.traverse.Tree.{bin, tip, writeBck, writeFwd}
+import com.myway.traverse.Tree.{bin, tip, unlabelize, writeBck, writeFwd}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -29,11 +29,16 @@ class TreeTest extends AnyFunSuite with Matchers {
   }
 
   test("unlabel ") {
+    // arrange
     val st: State[List[Int], Tree[(Char, Int)]] = Tree.label[Char, Int](tr)
     val tr2: Tree[(Char, Int)] = st.runA(List(5, 6, 7, 8)).value
+    // act
     val o: State[List[Int], Tree[Char]] = Tree.unlabel[Char, Int](tr2)
+    val actual = unlabelize(tr2)
+    // assert
     val out: List[Int] = o.run(Nil).value._1
     out shouldBe List(5, 6, 7, 8)
+    actual shouldBe List(5, 6, 7, 8)
   }
 
   test("writer fwd / back") {
