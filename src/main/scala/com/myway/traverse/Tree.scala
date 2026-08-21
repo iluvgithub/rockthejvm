@@ -68,8 +68,8 @@ object Tree {
 
   def visit[A](a: A): Log[A, A] = Writer(List(a), a)
 
-  def captureInWriterBck[A](tr: Tree[A]): List[A] = tr.traverse(visit).written
-  def captureInWriterFwd[A](tr: Tree[A]): List[A] =
+  def writeBck[A](tr: Tree[A]): List[A] = tr.traverse(visit).written
+  def writeFwd[A](tr: Tree[A]): List[A] =
     tr.traverseBack(visit).written
 
 }

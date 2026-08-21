@@ -1,12 +1,7 @@
 package com.myway.traverse
 
 import cats.data.State
-import com.myway.traverse.Tree.{
-  bin,
-  captureInWriterBck,
-  captureInWriterFwd,
-  tip
-}
+import com.myway.traverse.Tree.{bin, writeBck, writeFwd, tip}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -46,8 +41,8 @@ class TreeTest extends AnyFunSuite with Matchers {
   }
 
   test("writer fwd / back") {
-    val fwd: List[Char] = captureInWriterBck(tr)
-    val bak: List[Char] = captureInWriterFwd(tr)
+    val fwd: List[Char] = writeBck(tr)
+    val bak: List[Char] = writeFwd(tr)
 
     fwd shouldBe List('d', 'c', 'b', 'a')
     bak shouldBe List('a', 'b', 'c', 'd')
